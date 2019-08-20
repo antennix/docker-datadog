@@ -1,0 +1,30 @@
+#https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent
+version: '2'
+services:
+  php:
+    image: php:7.0-apache
+    container_name: php
+    tty: true
+    ports:
+      - 80:80    
+    volumes:
+      - ./php/html/:/var/www/html
+      - ./php/ini/php.ini:/usr/local/etc/php/conf.d/php.ini      
+      - ./log/:/var/log/apache2/
+      - ./php-log/:/var/log/php/
+  dd-agent:
+    build:
+      context: datadog  
+    container_name: dd-agent
+    environment:
+      - DD_API_KEY=${DATADOG_API_KEY}
+      - DD_LOGS_ENABLED=true
+      - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=false
+      - DD_AC_EXCLUDE="name:dd-agent"
+      - DD_HOSTNAME="ft"
+    volumes:
+     - /var/run/docker.sock:/var/run/docker.sock:ro
+     - /proc/:/host/proc/:ro
+     - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+     - ./log/:/var/www/log/
+     - ./php-log/:/var/www/php-log/

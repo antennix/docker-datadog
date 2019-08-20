@@ -1,0 +1,16 @@
+init_config:
+
+instances:
+
+logs:
+  - type: file
+    path: /var/www/log/access.log
+    service: apache
+    source: apache-access
+    sourcecategory: http_web_access
+
+  - type: file
+    path: /var/www/php-log/error.log
+    service: php
+    source: php-error
+    sourcecategory: http_web_access
